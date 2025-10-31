@@ -9,9 +9,16 @@
     <div id="container">
         <input type="text" id="input">
         <button id="submit" onClick="handle()">Submit</button>
+        
+        <div id="color-control">
+            <div id="colors"></div>
+            <input type="color" id="color" value="#ff0000">
+            <button id="add-color" onClick="addColorPicker()">Add gradient color</button>
+            <button id="apply-gradient" onClick="applyGradient()">Apply gradient</button>
+        </div>
 
         <canvas id="canvas">
-            
+
         </canvas>
 
     </div>
