@@ -142,6 +142,33 @@ function handle(){
     }, timepernote)
 }
 
+let points = [];
+
+function waveFill(){
+    const fillRadio = document.getElementById("fill-wave");
+    if (!fillRadio || !fillRadio.checked) return;
+    if (points.length < 2) return;
+
+    ctx.moveTo(points[0].x, points[0].y);
+    ctx.beginPath();
+    for (let i = 1; i < points.length; i++){
+        ctx.lineTo(points[i].x, points[i].y);
+    }
+
+    ctx.lineTo(points[points.length-1].x, height);
+    ctx.lineTo(points[0].x, height);
+    ctx.closePath();
+
+    if (currentGradient){
+        ctx.fillStyle = currentGradient;
+    }
+    else {
+        ctx.fillStyle = "#d4edd9ff"
+    }
+    ctx.fill();
+
+}
+
 var counter = 0;
 
 function drawWave(){
@@ -154,6 +181,9 @@ function drawWave(){
         y = height/2;
         ctx.moveTo(x, y);
         ctx.beginPath();
+
+        points = [];
+        points.push({x:x, y:y});
     }
     
 
@@ -167,6 +197,7 @@ function line(){
 
     counter++;
     y = (height/2) + (((vol_slide.value/100)*40)*Math.sin(2*Math.PI*freq*x*(0.5*length)));
+    points.push({x:x, y:y});
     ctx.lineTo(x, y);
     if (currentGradient === null){
         ctx.strokeStyle = color_picker.value;
@@ -176,11 +207,13 @@ function line(){
         ctx.strokeStyle = currentGradient;
 
     }
+
     ctx.stroke();
     x = x+1;
 
     if (counter > (timepernote/20)){
         clearInterval(interval);
+        waveFill();
     }
 }
 
