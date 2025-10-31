@@ -3,8 +3,6 @@ var ctx = canvas.getContext("2d");
 
 var width = ctx.canvas.width;
 var height = ctx.canvas.height;
-var amplitude = 40;
-const gradient = ctx.createLinearGradient(0, 0, width, 0)
 
 const color_picker = document.getElementById("color")
 let currentGradient = null;
@@ -16,6 +14,7 @@ var interval = null;
 var reset = false;
 
 const input = document.getElementById('input');
+const vol_slide = document.getElementById('vol-slide')
 
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
@@ -38,10 +37,14 @@ notes.set("B", 493.9);
 oscillator.start();
 gainNode.gain.value = 0;
 
-function createColorInput(value = #ffffffff){
+function createColorInput(value = '#ff0000'){
     const container = document.getElementById("colors");
     const wrapper = document.createElement("div");
     wrapper.className = 'color-wrapper';
+
+    if (wrapper){
+        wrapper.classList.add('wrapper-styles');
+    }
 
     const input = document.createElement("input");
     input.type = "color";
@@ -51,32 +54,62 @@ function createColorInput(value = #ffffffff){
     const remove = document.createElement("button");
     remove.type = "button";
     remove.textContent = 'X';
-    remove.addEventListener('click', () => wrapper.remove());
+    remove.style.paddingBottom = "0.3em";
+    remove.style.paddingTop = "0.3em";
+    remove.style.margin = "0.2em";
+    remove.addEventListener('click', () => {
+        wrapper.remove();
+        applyGradient();
+    });
 
-    wrapper.appendChild('input');
-    wrapper.appendChild('remove');
-    container.appendChild('wrapper');
+    wrapper.appendChild(input);
+    wrapper.appendChild(remove);
+    container.appendChild(wrapper);
 
     return input;
-
-
 }
 
 function addColorPicker(){
-    createColorInput(#ffffffff);
+    createColorInput('#ff0000');
     applyGradient();
 }
 
-function applyGradient(){
-
+function getColors(){
+    return Array.from(document.querySelector('#colos input[type="color"]'))
+        .map(i => i.value);
 }
+
+
+function applyGradient(){
+    const nodeList = document.querySelectorAll('#colors input[type="color"]');
+    const colorList = Array.from(nodeList);
+
+    if(colorList.length === 0) {
+        currentGradient = null;
+        return;
+    }
+    const gradient = ctx.createLinearGradient(0, 0, width, 0);
+    const steps = Math.max(colorList.length - 1, 1);
+    colorList.forEach((color, index) => {
+        gradient.addColorStop(index/steps, color.value);
+    });
+
+currentGradient = gradient;
+}
+
+
 
 function frequency(pitch){
 
     freq = pitch/10000;
-    gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(vol_slide.value, audioCtx.currentTime);
+    setting = setInterval(() => {gainNode.value = vol_slide.value}, 1);
     oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(0, (audioCtx.currentTime + ((timepernote/1000) - 0.1)));
+    setTimeout(() => {
+        clearInterval(setting);
+        gainNode.gain.value = 0;
+    }, ((timepernote)-10));
+    // gainNode.gain.setValueAtTime(0, (audioCtx.currentTime + ((timepernote/1000) - 0.1)));
 
 }
 
@@ -133,9 +166,16 @@ function drawWave(){
 function line(){
 
     counter++;
-    y = (height/2) + (amplitude*Math.sin(2*Math.PI*freq*x*(0.5*length)));
+    y = (height/2) + (((vol_slide.value/100)*40)*Math.sin(2*Math.PI*freq*x*(0.5*length)));
     ctx.lineTo(x, y);
-    ctx.strokeStyle = color_picker.value;
+    if (currentGradient === null){
+        ctx.strokeStyle = color_picker.value;
+
+    }
+    else {
+        ctx.strokeStyle = currentGradient;
+
+    }
     ctx.stroke();
     x = x+1;
 
@@ -144,3 +184,7 @@ function line(){
     }
 }
 
+window.addEventListener('load', () => {
+    createColorInput('#ff0000');
+    applyGradient();
+});

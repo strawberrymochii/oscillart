@@ -2,5 +2,25 @@
     border: solid 5px maroon;
     height: 500px;
     width: 900px;
-    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+.wrapper-styles{
+    display: inline-flex;
+    align-items: center;
+    margin: 2%;
+}
+
+body{
+    /* display: flex;
+    text-align: center;
+    width: 50%;
+    margin-left: 15%;
+    margin-top: 2%; */
+}
+
+#options{
+    display:flex;
+    flex-direction: column;
+    gap: 0.5em;
 }

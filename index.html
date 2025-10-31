@@ -7,16 +7,32 @@
 <body>
 
     <div id="container">
-        <input type="text" id="input">
-        <button id="submit" onClick="handle()">Submit</button>
-        
+        <div id="options">
+            <div>
+            <input type="text" id="input">
+            </div>
+            <div>
+            <button id="submit" onClick="handle()">Submit</button>
+            </div>
+            <div>
+            <input type="range" min="1" max="100" value="100" id="vol-slide">
+            </div>
+            <div>
+            <input type="radio" id="fill-wave" value="Filled">
+            <label for="fill-wave">Filled wave</label>
+            </div>
+            <div>
+            <input type="radio" id="line-wave" value="Line">
+            <label for="line-wave">Line wave</label>
+            </div>
+        </div>
         <div id="color-control">
             <div id="colors"></div>
-            <input type="color" id="color" value="#ff0000">
+            <!-- <input type="color" id="color" value="#ff0000"> -->
             <button id="add-color" onClick="addColorPicker()">Add gradient color</button>
-            <button id="apply-gradient" onClick="applyGradient()">Apply gradient</button>
+            <!-- <button id="apply-gradient" onClick="applyGradient()">Apply gradient</button> -->
         </div>
-
+        
         <canvas id="canvas">
 
         </canvas>
