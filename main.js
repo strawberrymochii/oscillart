@@ -49,7 +49,7 @@ function createColorInput(value = '#ffffffff'){
     const input = document.createElement("input");
     input.type = "color";
     input.style.backgroundColor = "#E2D2C8";
-    input.style.backgroundColor = "rgba(142, 128, 141, 1)";
+    input.style.border = "rgba(142, 128, 141, 1)";
     input.value = value;
     input.addEventListener('input', applyGradient);
 
