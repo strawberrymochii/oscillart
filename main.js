@@ -37,7 +37,7 @@ notes.set("B", 493.9);
 oscillator.start();
 gainNode.gain.value = 0;
 
-function createColorInput(value = '#ff0000'){
+function createColorInput(value = '#ffffffff'){
     const container = document.getElementById("colors");
     const wrapper = document.createElement("div");
     wrapper.className = 'color-wrapper';
@@ -48,6 +48,8 @@ function createColorInput(value = '#ff0000'){
 
     const input = document.createElement("input");
     input.type = "color";
+    input.style.backgroundColor = "#E2D2C8";
+    input.style.backgroundColor = "rgba(142, 128, 141, 1)";
     input.value = value;
     input.addEventListener('input', applyGradient);
 
@@ -57,6 +59,9 @@ function createColorInput(value = '#ff0000'){
     remove.style.paddingBottom = "0.3em";
     remove.style.paddingTop = "0.3em";
     remove.style.margin = "0.2em";
+    remove.style.color = "rgba(142, 128, 141, 1)";
+    remove.style.backgroundColor = "#E2D2C8";
+    remove.style.border = "rgba(142, 128, 141, 1)";
     remove.addEventListener('click', () => {
         wrapper.remove();
         applyGradient();
@@ -218,6 +223,19 @@ function line(){
 }
 
 window.addEventListener('load', () => {
-    createColorInput('#ff0000');
+    const submitBtn = document.getElementById('submit');
+    if(submitBtn){
+    submitBtn.style.color = "rgba(142, 128, 141, 1)";
+    submitBtn.style.backgroundColor = "#E2D2C8";
+    submitBtn.style.border = "rgba(142, 128, 141, 1)";
+    }
+    const addColorBtn = document.getElementById('add-color');
+    if(addColorBtn){
+        addColorBtn.style.color = "rgba(142, 128, 141, 1)";
+    addColorBtn.style.backgroundColor = "#E2D2C8";
+    addColorBtn.style.border = "rgba(142, 128, 141, 1)";
+    }
+
+    createColorInput('#ffffffff');
     applyGradient();
 });

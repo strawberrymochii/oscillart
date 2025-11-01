@@ -1,9 +1,15 @@
 #canvas{
-    border: solid 5px maroon;
-    height: 500px;
+    border: solid 0.3em rgb(148, 163, 183);
+    height: 400px;
     width: 900px;
-    margin-top: 2em;
+    margin-top: 0.5em;
+    background-color: white;
+}
+
+#frame{
     margin-left: 17em;
+    text-align: center;
+    color: rgb(196, 194, 208);
 }
 
 .wrapper-styles{
@@ -11,33 +17,32 @@
     align-items: center;
     margin: 2%;
 }
-/* 
+
 body{
-    display: flex;
-    text-align: center;
-    width: 50%;
-    margin-left: 15%;
-    margin-top: 2%;
-} */
+    background-color: #8E7692;
+}
+
 
 #options{
     display:flex;
     flex-direction: column;
     gap: 0.5em;
     height: auto;
-    width: 20em;
+    width: 15em;
     position: fixed;
+    border-right: dotted 0.2em #482841;
     z-index: 1;
     top: 0;
     left: 0;
+    bottom: 0;
     overflow-x: hidden;
     padding-top: 5%;
     padding-left: 2%;
+    background-color: #CEB2BD;
+    color: rgb(21, 113, 102);
 }
 
-#color-control{
-    /* margin-left: 17em;
-    padding: 0 1em; */
+/* #color-control{
     height: auto;
     width: 16em;
     position: fixed;
@@ -47,5 +52,6 @@ body{
     overflow-x: hidden;
     padding-top: 5%;
     padding-left: 2%;
-}
+
+} */
 
