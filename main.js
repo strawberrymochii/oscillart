@@ -6,6 +6,14 @@ var height = ctx.canvas.height;
 
 const recording_toggle = document.getElementById("record");
 
+const lineThickness = document.getElementById("line-weight");
+const linePreview = document.getElementById("line-preview");
+linePreview.style.height = (lineThickness.value/10) + "px";
+lineThickness.addEventListener('input', () => {
+    linePreview.style.height = (lineThickness.value/10) + "px";
+})
+
+
 const color_picker = document.getElementById("color")
 let currentGradient = null;
 
@@ -39,54 +47,7 @@ notes.set("B", 493.9);
 oscillator.start();
 gainNode.gain.value = 0;
 
-var blob, recorder = null;
-var chunks = [];
 
-function startRecording(){
-    const canvasStream = canvas.captureStream(20);
-    const audioDestination = audioCtx.createMediaStreamDestination();
-    gainNode.connect(audioDestination);
-    const combinedStream = new MediaStream();
-    canvasStream.getVideoTracks().forEach(track => {
-        combinedStream.addTrack(track);
-    })
-    audioDestination.stream.getAudioTracks().forEach(track => {
-        combinedStream.addTrack(track);
-    })
-
-    recorder = new MediaRecorder(combinedStream, {mimeType: 'video/webm'});
-        recorder.ondataavailable = e => {
-    if (e.data.size > 0) {
-    chunks.push(e.data);
-    }
-    };
-
-
-    recorder.onstop = () => {
-    const blob = new Blob(chunks, { type: 'video/webm' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'recording.webm';
-    a.click();
-    URL.revokeObjectURL(url);
-    };
-    recorder.start();
-}
-
-var isRecording = false;
-var buttonText = "";
-function toggle(){
-    isRecording = !isRecording;
-    if (ifRecording = true){
-        recording_toggle.innerHTML = "Stop Recording";
-        startRecording();
-    }
-    else {
-        recording_toggle.innerHTML = "Start Recording";
-        recorder.stop();
-    }
-}
 
 function createColorInput(value = '#ffffffff'){
     const container = document.getElementById("colors");
@@ -103,6 +64,13 @@ function createColorInput(value = '#ffffffff'){
     input.style.border = "rgba(142, 128, 141, 1)";
     input.value = value;
     input.addEventListener('input', applyGradient);
+    input.addEventListener('mouseover', function(){
+        input.style.backgroundColor = "#bdb6b3ff";
+    });
+    input.addEventListener('mouseout', function(){
+        input.style.backgroundColor = "#E2D2C8";
+
+    });
 
     const remove = document.createElement("button");
     remove.type = "button";
@@ -113,6 +81,14 @@ function createColorInput(value = '#ffffffff'){
     remove.style.color = "rgba(142, 128, 141, 1)";
     remove.style.backgroundColor = "#E2D2C8";
     remove.style.border = "rgba(142, 128, 141, 1)";
+        remove.addEventListener('mouseover', function(){
+        remove.style.backgroundColor = "#bdb6b3ff";
+    });
+    remove.addEventListener('mouseout', function(){
+        remove.style.backgroundColor = "#E2D2C8";
+
+    });
+
     remove.addEventListener('click', () => {
         wrapper.remove();
         applyGradient();
@@ -131,7 +107,7 @@ function addColorPicker(){
 }
 
 function getColors(){
-    return Array.from(document.querySelector('#colos input[type="color"]'))
+    return Array.from(document.querySelector('#colors input[type="color"]'))
         .map(i => i.value);
 }
 
@@ -263,7 +239,7 @@ function line(){
         ctx.strokeStyle = currentGradient;
 
     }
-
+    ctx.lineWidth = (lineThickness.value)/20 + 0.5;
     ctx.stroke();
     x = x+1;
 
@@ -273,18 +249,80 @@ function line(){
     }
 }
 
+var blob, recorder = null;
+var chunks = [];
+
+function startRecording(){
+    const canvasStream = canvas.captureStream(20);
+    const audioDestination = audioCtx.createMediaStreamDestination();
+    gainNode.connect(audioDestination);
+    const combinedStream = new MediaStream();
+    canvasStream.getVideoTracks().forEach(track => {
+        combinedStream.addTrack(track);
+    })
+    audioDestination.stream.getAudioTracks().forEach(track => {
+        combinedStream.addTrack(track);
+    })
+
+    recorder = new MediaRecorder(combinedStream, {mimeType: 'video/webm'});
+        recorder.ondataavailable = e => {
+    if (e.data.size > 0) {
+    chunks.push(e.data);
+    }
+    };
+
+
+    recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recording.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+    };
+    recorder.start();
+}
+
+var is_recording = false;
+function toggle(){
+    is_recording = !is_recording;
+    if (is_recording){
+        recording_toggle.innerHTML = "Stop Recording";
+        startRecording();
+    }
+    else {
+        recording_toggle.innerHTML = "Start Recording";
+        recorder.stop();
+    }
+}
+
 window.addEventListener('load', () => {
     const submitBtn = document.getElementById('submit');
     if(submitBtn){
     submitBtn.style.color = "rgba(142, 128, 141, 1)";
     submitBtn.style.backgroundColor = "#E2D2C8";
     submitBtn.style.border = "rgba(142, 128, 141, 1)";
+        submit.addEventListener('mouseover', function(){
+        submit.style.backgroundColor = "#bdb6b3ff";
+    });
+    submit.addEventListener('mouseout', function(){
+        submit.style.backgroundColor = "#E2D2C8";
+
+    });
     }
     const addColorBtn = document.getElementById('add-color');
     if(addColorBtn){
         addColorBtn.style.color = "rgba(142, 128, 141, 1)";
     addColorBtn.style.backgroundColor = "#E2D2C8";
     addColorBtn.style.border = "rgba(142, 128, 141, 1)";
+        addColorBtn.addEventListener('mouseover', function(){
+        addColorBtn.style.backgroundColor = "#bdb6b3ff";
+    });
+    addColorBtn.addEventListener('mouseout', function(){
+        addColorBtn.style.backgroundColor = "#E2D2C8";
+
+    });
     }
 
     createColorInput('#ffffffff');
