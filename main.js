@@ -4,6 +4,8 @@ var ctx = canvas.getContext("2d");
 var width = ctx.canvas.width;
 var height = ctx.canvas.height;
 
+const recording_toggle = document.getElementById("record");
+
 const color_picker = document.getElementById("color")
 let currentGradient = null;
 
@@ -36,6 +38,55 @@ notes.set("B", 493.9);
 
 oscillator.start();
 gainNode.gain.value = 0;
+
+var blob, recorder = null;
+var chunks = [];
+
+function startRecording(){
+    const canvasStream = canvas.captureStream(20);
+    const audioDestination = audioCtx.createMediaStreamDestination();
+    gainNode.connect(audioDestination);
+    const combinedStream = new MediaStream();
+    canvasStream.getVideoTracks().forEach(track => {
+        combinedStream.addTrack(track);
+    })
+    audioDestination.stream.getAudioTracks().forEach(track => {
+        combinedStream.addTrack(track);
+    })
+
+    recorder = new MediaRecorder(combinedStream, {mimeType: 'video/webm'});
+        recorder.ondataavailable = e => {
+    if (e.data.size > 0) {
+    chunks.push(e.data);
+    }
+    };
+
+
+    recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recording.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+    };
+    recorder.start();
+}
+
+var isRecording = false;
+var buttonText = "";
+function toggle(){
+    isRecording = !isRecording;
+    if (ifRecording = true){
+        recording_toggle.innerHTML = "Stop Recording";
+        startRecording();
+    }
+    else {
+        recording_toggle.innerHTML = "Start Recording";
+        recorder.stop();
+    }
+}
 
 function createColorInput(value = '#ffffffff'){
     const container = document.getElementById("colors");
